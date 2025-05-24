@@ -8,21 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -name: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      -name: Login to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      -name: Build Docker image
+      - name: Build Docker image
         run: docker build -t rodolforamirez/docker-react -f Dockerfile.dev .
-      -name: Run tests
+      - name: Run tests
         run: docker run -e CI=true rodolforamirez/docker-react npm run test
-      -name: Generate deployment package
+      - name: Generate deployment package
         run: zip -r deployment.zip . -x '*.git*'
-      -name: Deploy to EB
+      - name: Deploy to EB
         uses: rodolforamirez/beanstalk-deploy@21
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
