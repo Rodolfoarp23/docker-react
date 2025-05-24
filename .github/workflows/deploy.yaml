@@ -23,7 +23,7 @@ jobs:
       - name: Generate deployment package
         run: zip -r deployment.zip . -x '*.git*'
       - name: Deploy to EB
-        uses: rodolforamirez/beanstalk-deploy@21
+        uses: Rodolfoarp23/docker-react-deploy@21
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
