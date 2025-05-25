@@ -3,11 +3,10 @@ on:
   push:
     branches:
       - main # check your repo, your default branch might be master!
- 
+permissions:
+  id-token: write
+  pages: write 
 jobs:
-  permissions:
-    id-token: write
-    pages: write
   build:
     runs-on: ubuntu-latest
     steps:
