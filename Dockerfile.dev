@@ -1,5 +1,8 @@
-# Dockerfile (para producción)
+# Dockerfile
 FROM node:lts-alpine
+
+# Instalar dependencias de sistema si son necesarias
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
@@ -8,6 +11,7 @@ RUN npm install --production
 
 COPY . .
 
+# Elastic Beanstalk espera este puerto
 ENV PORT=8080
 EXPOSE 8080
 
