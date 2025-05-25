@@ -1,10 +1,14 @@
+# Dockerfile (para producción)
 FROM node:lts-alpine
 
-WORKDIR '/app'
+WORKDIR /app
 
-COPY package.json .
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm install --production
 
 COPY . .
+
+ENV PORT=8080
+EXPOSE 8080
 
 CMD ["npm", "run", "start"]
