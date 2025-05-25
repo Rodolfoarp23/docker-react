@@ -8,12 +8,49 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create ZIP package
-        run: zip -r deployment.zip . -x '*.git*'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # o la versión que estés usando
+
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Create production Dockerfile and nginx.conf
+        run: |
+          echo "FROM node:lts-alpine as builder
+          WORKDIR /app
+          COPY package.json ./
+          COPY package-lock.json ./
+          RUN npm install
+          COPY . ./
+          RUN npm run build
+
+          FROM nginx:alpine
+          COPY nginx.conf /etc/nginx/conf.d/default.conf
+          COPY --from=builder /app/build /usr/share/nginx/html
+          EXPOSE 8080
+          CMD [\"nginx\", \"-g\", \"daemon off;\"]" > Dockerfile
+
+          echo "server {
+            listen 8080;
+            location / {
+              root /usr/share/nginx/html;
+              index index.html;
+              try_files \$uri /index.html;
+            }
+          }" > nginx.conf
+
+      - name: Create ZIP package for Elastic Beanstalk
+        run: |
+          zip -r deployment.zip . -x '*.git*' 'node_modules/*' '.github/*'
 
       - name: Deploy to AWS Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
