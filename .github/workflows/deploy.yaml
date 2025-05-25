@@ -5,6 +5,9 @@ on:
       - main # check your repo, your default branch might be master!
  
 jobs:
+  permissions:
+    id-token: write
+    pages: write
   build:
     runs-on: ubuntu-latest
     steps:
